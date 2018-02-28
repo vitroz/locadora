@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="template.xhtml">
+	
+	<ui:define name="conteudo">
+		<h:form id="formCadastroCarro">
+			<p:growl id="growl" showDetail="false"/>
+			
+			<h1>Cadastro de Carros</h1>
+			<p:messages id="messages" />
+				<h:panelGrid id="modalCarro" columns="2" style="margin-bottom:10px">
+	
+					<p:outputLabel for="chassi" value="Chassi: " />
+					<p:inputText id="chassi" value="#{CarroMB.carro.chassi}" />
+					<p:outputLabel for="placa" value="Placa: " />
+					<p:inputText id="placa" value="#{CarroMB.carro.placa}" />
+					<p:outputLabel for="cor" value="Cor: " />
+					<p:inputText id="cor" value="#{CarroMB.carro.cor}" />
+					<p:outputLabel for="modelo" value="Modelo: " />
+					<p:inputText id="modelo" value="#{CarroMB.carro.modelo}" />
+					<p:outputLabel for="marca" value="Marca: " />
+					<p:inputText id="marca" value="#{CarroMB.carro.marca}" />
+					<p:outputLabel for="ano" value="Ano: " />
+					<p:inputText id="ano" value="#{CarroMB.carro.ano}" />
+	
+					<p:commandButton update="tabela" value="Cadastrar" icon="ui-icon-star" actionListener="#{CarroMB.salvar}"
+						ajax="false">
+					</p:commandButton>
+	
+				</h:panelGrid>
+		</h:form>
+		
+	</ui:define>
+</ui:composition>

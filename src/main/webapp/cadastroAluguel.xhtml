@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="template.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formCadastroAluguel">
+			<p:growl id="growl" showDetail="false" />
+
+			<h1>Aluguel de Carros</h1>
+			<p:messages id="messages" />
+			<h:panelGrid id="modalAluguel" columns="1" style="margin-bottom:10px">
+
+				<p:outputLabel for="selectCliente" value="Cliente: " />
+
+				<p:selectOneMenu id="selectCliente"
+					value="#{AluguelMB.aluguel.cliente}"
+					converter="util.SimpleEntityConverter" panelStyle="width:400px"
+					effect="fade" var="c" style="width:400px" filter="true"
+					filterMatchMode="startsWith">
+					<f:selectItems value="#{ClienteMB.listaClientes()}" var="cli"
+						itemLabel="#{cli.nome}" itemValue="#{cli}" />
+					<p:column style="width:10%">
+						<h:outputText value="#{c.nome}" />
+					</p:column>
+					<p:column>
+						<h:outputText value="#{c.numHabilitacao}" />
+					</p:column>
+				</p:selectOneMenu>
+				
+				<p:outputLabel for="selectCliente" value="Carro: " />
+				
+				<p:selectOneMenu id="selectCarro"
+					value="#{AluguelMB.aluguel.carro}"
+					converter="util.SimpleEntityConverter" panelStyle="width:400px"
+					effect="fade" var="cr" style="width:400px" filter="true"
+					filterMatchMode="startsWith">
+					<f:selectItems value="#{CarroMB.listaCarros()}" var="car"
+						itemLabel="#{car.modelo}" itemValue="#{car}" />
+					<p:column style="width:10%">
+						<h:outputText value="#{cr.modelo}" />
+					</p:column>
+					<p:column>
+						<h:outputText value="#{cr.placa}" />
+					</p:column>
+				</p:selectOneMenu>
+				
+				<p:outputLabel for="dataRetirada" value="Data da Retirada: " />
+				<p:calendar id="dataRetirada" value="#{AluguelMB.aluguel.dataAluguel}" navigator="true" pattern="dd/mm/yyyy" mindate="calwidget.today()" widgetVar="calwidget"></p:calendar>
+				
+				<p:outputLabel for="dataDevolucao" value="Data da Devolucao: " />
+				<p:calendar id="dataDevolucao" value="#{AluguelMB.aluguel.dataDevolucao}" navigator="true" pattern="dd/mm/yyyy" mindate="calwidget.today()" widgetVar="calwidget"></p:calendar>
+				
+				<p:commandButton update="tabela" value="Cadastrar"
+					icon="ui-icon-star" actionListener="#{AluguelMB.salvar}"
+					ajax="false">
+				</p:commandButton>
+
+			</h:panelGrid>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

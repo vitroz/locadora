@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="template.xhtml">
+	<ui:define name="conteudo">
+		<h:form id="formlista">
+			<p:growl id="growl" showDetail="false" />
+			<h1>Lista de Aluguel</h1>
+			<p:dataTable id="tabela" paginator="true" rows="5"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" var="aluguel"
+				value="#{AluguelMB.carregaAluguel}">
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Modelo do Carro:" />
+					</f:facet>
+					<h:outputText value="#{aluguel.carro.modelo}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Placa do Carro" />
+					</f:facet>
+					<h:outputText value="#{aluguel.carro.placa}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Nome do Cliente:" />
+					</f:facet>
+					<h:outputText value="#{aluguel.cliente.nome}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Habilitação do Cliente:" />
+					</f:facet>
+					<h:outputText value="#{aluguel.cliente.numHabilitacao}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Data Retirada:" />
+					</f:facet>
+					<h:outputText value="#{aluguel.dataAluguel}">
+						<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Data Devolução:" />
+					</f:facet>
+					<h:outputText value="#{aluguel.dataDevolucao}">
+						<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Ações">
+					<p:commandLink oncomplete="PF('dialogGerAluguel').show()"
+						update=":formedit">
+						<f:setPropertyActionListener value="#{aluguel}"
+							target="#{AluguelMB.aluguelSelecionado}" />
+						<h:outputText value="Editar" />
+					</p:commandLink>  
+		            &nbsp;
+		            <p:commandLink oncomplete="PF('confirmation').show()">
+						<f:setPropertyActionListener value="#{aluguel}"
+							target="#{AluguelMB.aluguelSelecionado}" />
+						<h:outputText value="Excluir" />
+					</p:commandLink>
+				</p:column>
+			</p:dataTable>
+
+			<p:confirmDialog id="confirmDialog"
+				message="Deseja realmente excluir o aluguel?"
+				header="Confirmação de exclusão" global="true"
+				widgetVar="confirmation">
+
+				<p:commandButton id="confirm" value="Sim" update="tabela growl"
+					oncomplete="PF('confirmation').hide()"
+					actionListener="#{AluguelMB.excluirAluguel}" process="@this" />
+				<p:commandButton id="decline" value="Não"
+					onclick="PF('confirmation').hide()" type="button" />
+
+			</p:confirmDialog>
+		</h:form>
+
+		<p:dialog header="Editar Aluguel" widgetVar="dialogGerAluguel"
+			resizable="false" showEffect="slide" width="500">
+			<h:form id="formedit" prependId="false">
+				<p:messages id="messages" />
+				<h:panelGrid id="modalAluguel" columns="1"
+					style="margin-bottom:10px"> 
+	
+					<p:outputLabel for="selectCliente" value="Cliente: " />
+
+					<p:selectOneMenu id="selectCliente"
+						value="#{AluguelMB.aluguelSelecionado.cliente}"
+						converter="util.SimpleEntityConverter" panelStyle="width:400px"
+						effect="fade" var="c" style="width:400px" filter="true"
+						filterMatchMode="startsWith">
+						<f:selectItems value="#{ClienteMB.listaClientes()}" var="cli"
+							itemLabel="#{cli.nome}" itemValue="#{cli}" />
+						<p:column style="width:10%">
+							<h:outputText value="#{c.nome}" />
+						</p:column>
+						<p:column>
+							<h:outputText value="#{c.numHabilitacao}" />
+						</p:column>
+					</p:selectOneMenu>
+
+					<p:selectOneMenu id="selectCarro"
+						value="#{AluguelMB.aluguelSelecionado.carro}"
+						converter="util.SimpleEntityConverter" panelStyle="width:400px"
+						effect="fade" var="cr" style="width:400px" filter="true"
+						filterMatchMode="startsWith">
+						<f:selectItems value="#{CarroMB.listaCarros()}" var="car"
+							itemLabel="#{car.modelo}" itemValue="#{car}" />
+						<p:column style="width:10%">
+							<h:outputText value="#{cr.modelo}" />
+						</p:column>
+						<p:column>
+							<h:outputText value="#{cr.placa}" />
+						</p:column>
+					</p:selectOneMenu>
+
+					<p:outputLabel for="dataRetirada" value="Data da Retirada: " />
+					<p:calendar id="dataRetirada"
+						value="#{AluguelMB.aluguelSelecionado.dataAluguel}" navigator="true"
+						pattern="dd/mm/yyyy" mindate="calwidget.today()" widgetVar="calwidget"></p:calendar>
+
+					<p:outputLabel for="dataDevolucao" value="Data da Devolucao: " />
+					<p:calendar id="dataDevolucao"
+						value="#{AluguelMB.aluguelSelecionado.dataDevolucao}" navigator="true"
+						pattern="dd/mm/yyyy" mindate="calwidget.today()" widgetVar="calwidget"></p:calendar>
+
+					<p:commandButton update="tabela"
+						oncomplete="dialogGerLivro.hide();" value="Alterar"
+						icon="ui-icon-star" actionListener="#{AluguelMB.alterar}"
+						ajax="false">
+					</p:commandButton>
+
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

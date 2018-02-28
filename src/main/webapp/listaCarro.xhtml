@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="template.xhtml">
+	<ui:define name="conteudo">
+		<h:form id="formlista">
+			<p:growl id="growl" showDetail="false"/>
+			<h1>Lista de Carros</h1>
+			<p:dataTable id="tabela" paginator="true" rows="5"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" var="carro"
+				value="#{CarroMB.carregaCarros}">
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Chassi" />
+					</f:facet>
+					<h:outputText value="#{carro.chassi}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Placa" />
+					</f:facet>
+					<h:outputText value="#{carro.placa}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Modelo" />
+					</f:facet>
+					<h:outputText value="#{carro.modelo}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Marca" />
+					</f:facet>
+					<h:outputText value="#{carro.marca}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Cor" />
+					</f:facet>
+					<h:outputText value="#{carro.cor}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Ano" />
+					</f:facet>
+					<h:outputText value="#{carro.ano}" />
+				</p:column>
+				
+				<p:column headerText="Ação">
+		        	<p:commandLink oncomplete="PF('dialogGerCarro').show()" update=":formedit">
+		            	<f:setPropertyActionListener value="#{carro}" target="#{CarroMB.carroSelecionado}" />  
+		            	<h:outputText value="Editar" />
+		            </p:commandLink>  
+		            &nbsp;
+		            <p:commandLink oncomplete="PF('confirmation').show()">
+		            	<f:setPropertyActionListener value="#{carro}" target="#{CarroMB.carroSelecionado}" />  
+		            	<h:outputText value="Excluir" />
+		            </p:commandLink>  
+		        </p:column>
+			</p:dataTable>
+			
+			<p:confirmDialog id="confirmDialog" message="Deseja realmente excluir o carro?"  
+		                header="Confirmação de exclusão" global="true" widgetVar="confirmation">  
+		                  
+		        <p:commandButton id="confirm" value="Sim" update="tabela growl" oncomplete="PF('confirmation').hide()" actionListener="#{CarroMB.excluirCarro}" process="@this"/>  
+		        <p:commandButton id="decline" value="Não" onclick="PF('confirmation').hide()" type="button" />   
+		                  
+		    </p:confirmDialog>
+		</h:form>
+		
+		<p:dialog header="Editar Carro" widgetVar="dialogGerCarro"
+			resizable="false" showEffect="slide" width="500">
+			<h:form id="formedit" prependId="false">
+				<p:messages id="messages" />
+				<h:panelGrid id="modalCarro" columns="2" style="margin-bottom:10px">
+	
+					<p:outputLabel for="chassi" value="Chassi: " />
+					<p:inputText id="chassi" value="#{CarroMB.carroSelecionado.chassi}" />
+					<p:outputLabel for="placa" value="Placa: " />
+					<p:inputText id="placa" value="#{CarroMB.carroSelecionado.placa}" />
+					<p:outputLabel for="cor" value="Cor: " />
+					<p:inputText id="cor" value="#{CarroMB.carroSelecionado.cor}" />
+					<p:outputLabel for="modelo" value="Modelo: " />
+					<p:inputText id="modelo" value="#{CarroMB.carroSelecionado.modelo}" />
+					<p:outputLabel for="marca" value="Marca: " />
+					<p:inputText id="marca" value="#{CarroMB.carroSelecionado.marca}" />
+					<p:outputLabel for="ano" value="Ano: " />
+					<p:inputText id="ano" value="#{CarroMB.carroSelecionado.ano}" />
+	
+					<p:commandButton update="tabela" oncomplete="dialogGerLivro.hide();"
+						value="Alterar" icon="ui-icon-star" actionListener="#{CarroMB.alterar}"
+						ajax="false">
+					</p:commandButton>
+	
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+		
+	</ui:define>
+</ui:composition>

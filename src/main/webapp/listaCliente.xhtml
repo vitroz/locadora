@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="template.xhtml">
+	<ui:define name="conteudo">
+		<h:form id="formlista">
+			<p:growl id="growl" showDetail="false"/>
+			<h1>Lista de Clientes</h1>
+			<p:dataTable id="tabela" paginator="true" rows="5"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" var="cliente"
+				value="#{ClienteMB.carregaClientes}">
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Nome" />
+					</f:facet>
+					<h:outputText value="#{cliente.nome}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Sobrenome" />
+					</f:facet>
+					<h:outputText value="#{cliente.sobrenome}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Habilitação" />
+					</f:facet>
+					<h:outputText value="#{cliente.numHabilitacao}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Nascimento" />
+					</f:facet>
+					<h:outputText value="#{cliente.dataNascimento}">
+					        <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+					 </h:outputText>
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Email" />
+					</f:facet>
+					<h:outputText value="#{cliente.email}" />
+				</p:column>
+				
+				<p:column headerText="Ação">
+		        	<p:commandLink oncomplete="PF('dialogGerCliente').show()" update=":formedit">
+		            	<f:setPropertyActionListener value="#{cliente}" target="#{ClienteMB.clienteSelecionado}" />  
+		            	<h:outputText value="Editar" />
+		            </p:commandLink>  
+		            &nbsp;
+		            <p:commandLink oncomplete="PF('confirmation').show()">
+		            	<f:setPropertyActionListener value="#{cliente}" target="#{ClienteMB.clienteSelecionado}" />  
+		            	<h:outputText value="Excluir" />
+		            </p:commandLink>  
+		        </p:column>
+			</p:dataTable>
+			
+			<p:confirmDialog id="confirmDialog" message="Deseja realmente excluir o cliente?"  
+		                header="Confirmação de exclusão" global="true" widgetVar="confirmation">  
+		                  
+		        <p:commandButton id="confirm" value="Sim" update="tabela growl" oncomplete="PF('confirmation').hide()" actionListener="#{ClienteMB.excluirCliente}" process="@this"/>  
+		        <p:commandButton id="decline" value="Não" onclick="PF('confirmation').hide()" type="button" />   
+		                  
+		    </p:confirmDialog>
+		</h:form>
+		
+		<p:dialog header="Editar Cliente" widgetVar="dialogGerCliente"
+			resizable="false" showEffect="slide" width="500" >
+			<h:form id="formedit" prependId="false">
+				<p:messages id="messages" />
+				<h:panelGrid id="modalCliente" columns="2" style="margin-bottom:10px">
+	
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" value="#{ClienteMB.clienteSelecionado.nome}" />
+					<p:outputLabel for="sobrenome" value="Sobrenome: " />
+					<p:inputText id="sobrenome" value="#{ClienteMB.clienteSelecionado.sobrenome}" />
+					<p:outputLabel for="cor" value="Doc. Habilitação: " />
+					<p:inputText id="cor" value="#{ClienteMB.clienteSelecionado.numHabilitacao}" />
+					<p:outputLabel for="email" value="Email: " />
+					<p:inputText id="email" type="email" value="#{ClienteMB.clienteSelecionado.email}" />
+					<p:outputLabel for="dataNascimento" value="Nascimento: " />
+					<p:calendar id="dataNascimento" value="#{ClienteMB.clienteSelecionado.dataNascimento}" navigator="true" pattern="dd/mm/yyyy" yearRange="c-100:c"></p:calendar>
+	
+					<p:commandButton update="tabela" value="Alterar" icon="ui-icon-star" actionListener="#{ClienteMB.alterar}"
+						ajax="false">
+					</p:commandButton>
+	
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+		
+	</ui:define>
+</ui:composition>

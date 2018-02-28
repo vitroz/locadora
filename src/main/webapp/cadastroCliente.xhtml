@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="template.xhtml">
+	
+	<ui:define name="conteudo">
+		<h:form id="formCadastroCliente">
+			<p:growl id="growl" showDetail="false"/>
+			
+			<h1>Cadastro de Clientes</h1>
+			<p:messages id="messages" />
+				<h:panelGrid id="modalCliente" columns="2" style="margin-bottom:10px">
+	
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" value="#{ClienteMB.cliente.nome}" />
+					<p:outputLabel for="sobrenome" value="Sobrenome: " />
+					<p:inputText id="sobrenome" value="#{ClienteMB.cliente.sobrenome}" />
+					<p:outputLabel for="cor" value="Doc. Habilitação: " />
+					<p:inputText id="cor" value="#{ClienteMB.cliente.numHabilitacao}" />
+					<p:outputLabel for="email" value="Email: " />
+					<p:inputText id="email" type="email" value="#{ClienteMB.cliente.email}" />
+					<p:outputLabel for="dataNascimento" value="Nascimento: " />
+					<p:calendar id="dataNascimento" value="#{ClienteMB.cliente.dataNascimento}" navigator="true" pattern="dd/mm/yyyy" yearRange="c-100:c" ></p:calendar>
+					
+					<p:commandButton update="tabela" value="Cadastrar" icon="ui-icon-star" actionListener="#{ClienteMB.salvar}"
+						ajax="false">
+					</p:commandButton>
+	
+				</h:panelGrid>
+		</h:form>
+		
+	</ui:define>
+</ui:composition>
